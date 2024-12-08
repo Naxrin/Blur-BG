@@ -6,7 +6,7 @@ struct Shader {
     GLuint fragment = 0;
     GLuint program = 0;
 
-    Result<std::string> compile(const ghc::filesystem::path& vertexPath, const ghc::filesystem::path& fragmentPath);
+    Result<std::string> compile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath);
     Result<std::string> link();
     void cleanup();
 };
@@ -143,7 +143,7 @@ void CCBlurLayer::draw()
     #endif
 }
 
-Result<std::string> Shader::compile(const ghc::filesystem::path& vertexPath, const ghc::filesystem::path& fragmentPath) {
+Result<std::string> Shader::compile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath) {
     auto vertexSource = file::readString(vertexPath);
     if (!vertexSource)
         return Err("failed to read vertex shader at path {}: {}", vertexPath.string(), vertexSource.unwrapErr());
@@ -198,7 +198,7 @@ Result<std::string> Shader::compile(const ghc::filesystem::path& vertexPath, con
     glAttachShader(program, fragment);
 
     return Ok(fmt::format(
-        "shader compilation successful. logs:\nvert:\n{}\nfrag:\n{}",
+        "shader compilation successful!",
         vertexLog, fragmentLog
     ));
 }
@@ -237,7 +237,7 @@ Result<std::string> Shader::link() {
         return Err("shader link failed:\n{}", programLog);
     }
 
-    return Ok(fmt::format("shader link successful. log:\n{}", programLog));
+    return Ok(fmt::format("shader link successful!", programLog));
 }
 
 void Shader::cleanup() {
@@ -400,6 +400,7 @@ $on_mod(Loaded) {
         setupPostProcess();
     });
 }
+/*
 $on_mod(Unloaded) {
     cleanupPostProcess();
-}
+}*/

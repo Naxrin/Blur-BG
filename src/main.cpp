@@ -15,6 +15,7 @@
 #include <Geode/modify/DailyLevelPage.hpp>
 #include <Geode/modify/ChallengesPage.hpp>
 #include <Geode/modify/HSVWidgetPopup.hpp>
+#include <Geode/modify/GJOptionsLayer.hpp>
 #include "CCBlurLayer.hpp"
 
 using namespace geode::prelude;
@@ -51,7 +52,11 @@ class $modify (EditorPauseLayer)
 
 class $modify (FLAlertLayerExt, FLAlertLayer)
 {
-	CCBlurLayer* blur;
+
+    struct Fields {
+        FLAlertLayerExt* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void show()
 	{
@@ -73,7 +78,10 @@ class $modify (FLAlertLayerExt, FLAlertLayer)
 
 class $modify (GJDropDownLayer)
 {
-	CCBlurLayer* blur;
+    struct Fields{
+        GJDropDownLayer* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void showLayer(bool p0)
 	{
@@ -108,7 +116,10 @@ class $modify (GJDropDownLayer)
 
 class $modify (InfoLayer)
 {
-	CCBlurLayer* blur;
+    struct Fields {
+        InfoLayer* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void show()
 	{
@@ -127,7 +138,10 @@ class $modify (InfoLayer)
 
 class $modify (ChallengesPage)
 {
-	CCBlurLayer* blur;
+    struct Fields {
+        ChallengesPage* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void show()
 	{
@@ -146,7 +160,10 @@ class $modify (ChallengesPage)
 
 class $modify (HSVWidgetPopup)
 {
-	CCBlurLayer* blur;
+    struct Fields {
+        HSVWidgetPopup* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void show()
 	{
@@ -165,13 +182,16 @@ class $modify (HSVWidgetPopup)
 
 class $modify (ProfilePage)
 {
-	CCBlurLayer* blur;
+    struct Fields {
+        ProfilePage* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void show()
 	{
 		ProfilePage::show();
 
-		if (!m_fields->blur && !getChildOfType<CCBlurLayer>(this, 0))
+		if (!m_fields->blur && !getChildByType<CCBlurLayer>(0))
 		{
 			m_fields->blur = CCBlurLayer::create();
 			m_fields->blur->setZOrder(-69);
@@ -184,7 +204,10 @@ class $modify (ProfilePage)
 
 class $modify (RewardsPage)
 {
-	CCBlurLayer* blur;
+    struct Fields {
+        RewardsPage* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void show()
 	{
@@ -203,7 +226,10 @@ class $modify (RewardsPage)
 
 class $modify (DailyLevelPage)
 {
-	CCBlurLayer* blur;
+    struct Fields {
+        DailyLevelPage* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void show()
 	{
@@ -220,13 +246,16 @@ class $modify (DailyLevelPage)
 	}
 };
 
-/*class $modify (ShardsPage)
+class $modify (GJOptionsLayer)
 {
-	CCBlurLayer* blur;
+    struct Fields {
+        GJOptionsLayer* self;
+		CCBlurLayer* blur;		
+    };
 
 	virtual void show()
 	{
-		ShardsPage::show();
+		GJOptionsLayer::show();
 
 		if (!m_fields->blur)
 		{
@@ -237,4 +266,4 @@ class $modify (DailyLevelPage)
 			this->addChild(m_fields->blur);
 		}
 	}
-};*/
+};
