@@ -1,12 +1,11 @@
 {
-	"geode": "2.0.0-beta.26",
+	"geode": "4.0.1",
 	"gd": {
-		"win": "2.204",
-		"mac": "2.200",
-		"android": "2.205",
-		"ios": "2.205"
+		"win": "2.2074",
+		"mac": "2.2074",
+		"android": "2.2074"
 	},
-	"version": "v1.0.1",
+	"version": "v2.0.1",
 	"id": "thesillydoggo.blur_bg",
 	"name": "Blur BG",
 	"developer": "TheSillyDoggo",
@@ -14,8 +13,12 @@
 	"resources": {
         "files": [
 			"resources/*.glsl",
-			"resources/*.hlsl",
-			"resources/*.png"
+			"resources/*.hlsl"
         ]
-    }
+    },
+	"api": {
+		"include": [
+			"src/CCBlurLayer.hpp"
+		]
+	}
 }
