@@ -205,9 +205,9 @@ class $modify (RewardsPage)
 		CCBlurLayer* blur;		
     };
 
-	virtual void show()
+	virtual void init()
 	{
-		RewardsPage::show();
+		RewardsPage::init();
 
 		if (!m_fields->blur)
 		{
