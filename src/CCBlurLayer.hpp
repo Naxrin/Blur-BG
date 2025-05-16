@@ -26,3 +26,5 @@ class CCBlurLayer : public CCLayerColor
 
         static CCBlurLayer* create();
 };
+
+static std::vector<CCBlurLayer*> layers;

@@ -1,6 +1,5 @@
 #include "CCBlurLayer.hpp"
 
-
 struct Shader {
     GLuint vertex = 0;
     GLuint fragment = 0;
@@ -38,14 +37,21 @@ using namespace Blur;
 
 CCBlurLayer::~CCBlurLayer()
 {
-
+    if (!layers.empty())
+        layers.pop_back();
+    if (!layers.empty())
+        layers.back()->setVisible(true);
+    //log::error("blur layer deconstructed! count = {}", CCBlurLayer::count);
 }
 
 bool CCBlurLayer::init()
 {
     if (!CCLayerColor::init())
         return false;
-
+    if (Mod::get()->getSettingValue<bool>("limit") && !layers.empty())
+        layers.back()->setVisible(false);
+    layers.push_back(this);    
+    //log::warn("blur layer constructed! count = {}", CCBlurLayer::count);
     this->addChild(CCSprite::create());
 
     return true;
@@ -83,8 +89,6 @@ void CCBlurLayer::visit()
 
 void CCBlurLayer::draw()
 {
-    #ifndef GEODE_IS_MACOS
-    
     if (blurStrength == 0)
         return CCLayerColor::draw();
 
@@ -139,8 +143,6 @@ void CCBlurLayer::draw()
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glBindVertexArray(0);
-
-    #endif
 }
 
 Result<std::string> Shader::compile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath) {
@@ -249,8 +251,10 @@ void Shader::cleanup() {
 void RenderTexture::setup(GLsizei width, GLsizei height) {
     GLint drawFbo = 0;
     GLint readFbo = 0;
+    GLint oldRbo = 0;
     glGetIntegerv(0x8CA6, &drawFbo);
     glGetIntegerv(0x8CAA, &readFbo);
+    glGetIntegerv(0x8CA7, &oldRbo);
 
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(0x8D40, fbo);
@@ -270,6 +274,7 @@ void RenderTexture::setup(GLsizei width, GLsizei height) {
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
     glFramebufferRenderbuffer(0x8D40, 0x821A, GL_RENDERBUFFER, rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, oldRbo);
 
     if(glCheckFramebufferStatus(0x8D40) != GL_FRAMEBUFFER_COMPLETE)
         log::error("pp fbo not complete, uh oh! i guess i will have to cut off ur pp now");
@@ -319,13 +324,17 @@ void setupPostProcess() {
 
     #ifdef GEODE_IS_ANDROID
     auto vertexPath = (std::string)CCFileUtils::get()->fullPathForFilename("pp-vert-android.glsl"_spr, false);
+    #elif defined(GEODE_IS_IOS)
+    auto vertexPath = CCFileUtils::get()->fullPathForFilename("pp-vert-ios.glsl"_spr, false);
     #else
-    auto vertexPath = (std::string)CCFileUtils::get()->fullPathForFilename("pp-vert.glsl"_spr, false);
+    auto vertexPath = CCFileUtils::get()->fullPathForFilename("pp-vert.glsl"_spr, false);
     #endif
     #ifdef GEODE_IS_ANDROID
     auto fragmentPath = (std::string)CCFileUtils::get()->fullPathForFilename("pp-frag-android.glsl"_spr, false);
+    #elif defined(GEODE_IS_IOS)
+    auto fragmentPath = CCFileUtils::get()->fullPathForFilename("pp-frag-ios.glsl"_spr, false);
     #else
-    auto fragmentPath = (std::string)CCFileUtils::get()->fullPathForFilename("pp-frag.glsl"_spr, false);
+    auto fragmentPath = CCFileUtils::get()->fullPathForFilename("pp-frag.glsl"_spr, false);
     #endif
 
     auto res = ppShader.compile(vertexPath, fragmentPath);
@@ -370,8 +379,6 @@ void cleanupPostProcess() {
     ppShaderRadius = 0;
 }
 
-#ifdef GEODE_IS_WINDOWS
-
 #include <Geode/modify/CCEGLViewProtocol.hpp>
 
 class $modify(CCEGLViewProtocol) {
@@ -383,8 +390,6 @@ class $modify(CCEGLViewProtocol) {
         setupPostProcess();
     }
 };
-
-#endif
 
 class $modify(GameManager) {
     void reloadAllStep5() {

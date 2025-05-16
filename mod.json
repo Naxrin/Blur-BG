@@ -1,24 +1,42 @@
 {
-	"geode": "4.0.1",
+	"geode": "4.4.0",
 	"gd": {
 		"win": "2.2074",
 		"mac": "2.2074",
-		"android": "2.2074"
+		"android": "2.2074",
+		"ios":"2.2074"
 	},
-	"version": "v2.0.1",
+	"version": "v2.1.0",
 	"id": "thesillydoggo.blur_bg",
 	"name": "Blur BG",
 	"developer": "TheSillyDoggo",
 	"description": "Applys a gaussian blur to most popups in Geometry Dash",
 	"resources": {
+		"sprites": [
+			"resources/*.png"
+		],
         "files": [
 			"resources/*.glsl",
 			"resources/*.hlsl"
         ]
     },
+	"settings": {
+		"switch": {
+			"name": "Switch",
+			"description": "Enable/Disable this mod",
+			"type": "bool",
+			"default": true
+		},
+		"limit": {
+			"name": "Max Layers",
+			"description": "only display the blur layer at the top to avoid device lag.",
+			"type": "bool",
+			"default": true
+		}
+	},
 	"api": {
 		"include": [
-			"src/CCBlurLayer.hpp"
+			"include/*.hpp"
 		]
 	}
 }
